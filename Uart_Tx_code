@@ -1,2 +1,85 @@
 In VLSI (Very Large Scale Integration) design, a UART (Universal Asynchronous Receiver-Transmitter) is a fundamental peripheral hardware IP block used to handle asynchronous serial communication. It functions as a bridge that translates data between parallel interfaces (such as the internal system data bus of a CPU or SoC) and serial interfaces (sending data sequentially bit-by-bit over a single wire)
 Because it is "asynchronous," it does not transmit a shared clock signal along with the data line. Instead, both the transmitter and receiver independently agree on a transmission speed, known as the baud rate
+CODE: 
+module uart_tx #(
+    parameter CLK_FREQ = 50_000_000,   // 50 MHz
+    parameter BAUD_RATE = 9600
+) (
+    input clk,
+    input rst,
+    input [7:0] tx_data,
+    input tx_start,
+    output reg tx_busy,
+    output reg tx
+);
+    localparam BIT_CNT_MAX = CLK_FREQ / BAUD_RATE;
+    localparam BIT_CNT_WIDTH = $clog2(BIT_CNT_MAX);
+    reg [BIT_CNT_WIDTH-1:0] bit_counter;
+    reg [3:0] bit_index;
+    reg [7:0] data_reg;
+
+    typedef enum { IDLE, START, DATA, STOP } state_t;
+    state_t state;
+
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            state <= IDLE;
+            tx <= 1'b1;
+            tx_busy <= 1'b0;
+            bit_counter <= 0;
+            bit_index <= 0;
+        end else begin
+            case (state)
+                IDLE : begin
+                    tx_busy <= 1'b0;
+                    if (tx_start) begin
+                        data_reg <= tx_data;
+                        tx_busy <= 1'b1;
+                        state <= START;
+                        bit_counter <= 0;
+                    end
+                end
+
+                START : begin
+                    tx <= 1'b0;
+                    if (bit_counter == BIT_CNT_MAX-1) begin
+                        bit_counter <= 0;
+                        state <= DATA;
+                        bit_index <= 0;
+                    end else begin
+                        bit_counter <= bit_counter + 1;
+                    end
+                end
+
+                DATA : begin
+                    tx <= data_reg[bit_index];
+                    if (bit_counter == BIT_CNT_MAX-1) begin
+                        bit_counter <= 0;
+                        if (bit_index == 7) begin
+                            state <= STOP;
+                        end else begin
+                            bit_index <= bit_index + 1;
+                        end
+                    end else begin
+                        bit_counter <= bit_counter + 1;
+                    end
+                end
+
+                STOP : begin
+                    tx <= 1'b1;
+                    if (bit_counter == BIT_CNT_MAX-1) begin
+                        state <= IDLE;
+                        tx_busy <= 1'b0;
+                    end else begin
+                        bit_counter <= bit_counter + 1;
+                    end
+                end
+            endcase
+
+
+
+
+
+        end
+    end
+endmodule
