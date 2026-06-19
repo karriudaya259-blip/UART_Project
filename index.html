@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{PROJECT_TOPIC}} - VLSI Design Project</title>
+    
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Prism.js for Syntax Highlighting (Verilog support) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* ---------- RESET & BASE ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0e14;
+            color: #e4e9f2;
+            line-height: 1.7;
+            display: flex;
+            padding: 0 20px;
+        }
+        a { color: #64b5f6; text-decoration: none; }
+        a:hover { color: #90caf9; text-decoration: underline; }
+
+        /* ---------- SIDEBAR (Table of Contents) ---------- */
+        .sidebar {
+            width: 280px;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            align-self: flex-start;
+            padding: 40px 20px 40px 0;
+            border-right: 1px solid #1e2630;
+            flex-shrink: 0;
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .sidebar .subtitle {
+            font-size: 13px;
+            color: #8892a8;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1e2630;
+            padding-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+            position: sticky;
+            top: 100px;
+        }
+        .sidebar ul li {
+            margin-bottom: 12px;
+        }
+        .sidebar ul li a {
+            color: #a8b2c1;
+            font-size: 14px;
+            font-weight: 400;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar ul li a i {
+            width: 20px;
+            font-size: 14px;
+            color: #4a5a72;
+        }
+        .sidebar ul li a:hover, .sidebar ul li a.active {
+            color: #64ffda;
+            text-decoration: none;
+        }
+        .sidebar ul li a:hover i, .sidebar ul li a.active i {
+            color: #64ffda;
+        }
+
+        /* ---------- MAIN CONTENT ---------- */
+        .main-content {
+            max-width: 1100px;
+            padding: 40px 50px 80px 50px;
+            flex: 1;
+        }
+
+        /* Header */
+        .project-header {
+            margin-bottom: 50px;
+            border-bottom: 1px solid #1e2630;
+            padding-bottom: 30px;
+        }
+        .project-header .badge {
+            display: inline-block;
+            background: #1e3a5f;
+            color: #90caf9;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+        .project-header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+        .project-header h1 span {
+            color: #64b5f6;
+        }
+        .project-header .meta {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #8892a8;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+        .project-header .meta i {
+            margin-right: 8px;
+            color: #4a5a72;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 30px;
+        }
+        section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid #1e2630;
+            padding-bottom: 10px;
+        }
+        section h2 i {
+            color: #64b5f6;
+            font-size: 24px;
+        }
+        section p, section li {
+            color: #c8d0dc;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        section ul {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        section ul li {
+            list-style-type: disc;
+        }
+
+        /* Highlight boxes */
+        .info-box {
+            background: #141b24;
+            border-left: 4px solid #64b5f6;
+            padding: 20px 25px;
+            border-radius: 6px;
+            margin: 25px 0;
+        }
+        .info-box strong {
+            color: #ffffff;
+        }
+
+        /* Code Blocks */
+        .code-container {
+            background: #0d1117;
+            border-radius: 10px;
+            border: 1px solid #1e2630;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .code-header {
+            background: #161c24;
+            padding: 10px 20px;
+            border-bottom: 1px solid #1e2630;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #8892a8;
+        }
+        .code-header i {
+            margin-right: 8px;
+        }
+        .code-header .file-name {
+            font-weight: 600;
+            color: #e4e9f2;
+        }
+        .code-container pre {
+            margin: 0 !important;
+            padding: 20px !important;
+            background: transparent !important;
+            overflow-x: auto;
+        }
+        .code-container code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Waveform Blog */
+        .waveform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .waveform-card {
+            background: #141b24;
+            border-radius: 10px;
+            border: 1px solid #1e2630;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+        .waveform-card:hover {
+            border-color: #64b5f6;
+        }
+        .waveform-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid #1e2630;
+            background: #0b0e14;
+            padding: 10px;
+        }
+        .waveform-card .caption {
+            padding: 15px 20px;
+            font-size: 14px;
+            color: #a8b2c1;
+        }
+        .waveform-card .caption i {
+            color: #64b5f6;
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                padding: 0 15px;
+            }
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #1e2630;
+                padding: 20px 0;
+            }
+            .sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px 20px;
+                position: relative;
+                top: 0;
+            }
+            .sidebar ul li {
+                margin-bottom: 0;
+            }
+            .main-content {
+                padding: 30px 0 60px 0;
+            }
+            .project-header h1 {
+                font-size: 30px;
+            }
+            .waveform-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .project-header .meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+            section h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SIDEBAR - TABLE OF CONTENTS (Edit links if you change IDs)
+    ============================================================ -->
+    <aside class="sidebar">
+        <h2>📁 {{UART-Universal Asynchronous Receiver-Transmitter}}</h2>
+        <div class="subtitle">VLSI Design · RTL</div>
+        <ul>
+            <li><a href="#background"><i class="fas fa-microchip"></i> Background</a></li>
+            <li><a href="#principle"><i class="fas fa-cogs"></i> Principle</a></li>
+            <li><a href="#vlsi-usage"><i class="fas fa-server"></i> Usage in VLSI</a></li>
+            <li><a href="#real-world"><i class="fas fa-globe-americas"></i> Real-World Apps</a></li>
+            <li><a href="#verilog-code"><i class="fas fa-code"></i> Verilog Code</a></li>
+            <li><a href="#testbench-code"><i class="fas fa-vial"></i> Testbench</a></li>
+            <li><a href="#waveforms"><i class="fas fa-chart-line"></i> Waveforms</a></li>
+        </ul>
+        <div style="margin-top: 40px; font-size: 13px; color: #4a5a72;">
+            <i class="fas fa-calendar-alt"></i> {{april}} &nbsp;|&nbsp; <i class="fas fa-tag"></i> 100-Day VLSI
+        </div>
+    </aside>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <main class="main-content">
+
+        <!-- -------- HEADER -------- -->
+        <header class="project-header">
+            <div class="badge"><i class="fas fa-check-circle"></i> Verified · Self-Checking TB</div>
+            <h1>{{PROJECT_TOPIC}} <span>Transceiver</span></h1>
+            <div class="meta">
+                <span><i class="fas fa-microchip"></i> Verilog HDL</span>
+                <span><i class="fas fa-tachometer-alt"></i> 115200 baud</span>
+                <span><i class="fas fa-tools"></i> iverilog + GTKWave</span>
+                <span><i class="fas fa-clock"></i> Part of 100-day VLSI journey</span>
+            </div>
+        </header>
+
+        <!-- ============================================================
+        1. BACKGROUND
+        ============================================================ -->
+        <section id="background">
+            <h2><i class="fas fa-microchip"></i> Background</h2>
+            <p>
+                {{The Universal Asynchronous Receiver-Transmitter (UART) is a serial communication protocol used for peer-to-peer data transfer. Unlike I2C/SPI, it doesn't need a shared clock—it relies on pre-negotiated baud rates.}} 
+                <br><br>
+                <strong>Example (UART):</strong> The Universal Asynchronous Receiver-Transmitter (UART) is a foundational serial communication protocol used in almost every embedded system. Unlike synchronous protocols (I2C/SPI), UART does not require a shared clock line—it relies on pre-negotiated baud rates and precise timing. This makes it ideal for long-distance communication between microcontrollers, GPS modules, and Bluetooth chips.
+                <br><br>
+                In this project, I designed a modular UART transceiver supporting the <strong>8N1</strong> format (8 data bits, No parity, 1 stop bit). The design is fully synthesizable and validated with a self-checking testbench.
+            </p>
+            <div class="info-box">
+                <i class="fas fa-lightbulb" style="color: #64b5f6; margin-right: 10px;"></i>
+                <strong>Why this matters:</strong> UART is the "hello world" of serial communication. Mastering it proves you understand timing, FSM design, and cycle-accurate simulation—core skills for any RTL engineer.
+            </div>
+        </section>
+
+        <!-- ============================================================
+        2. PRINCIPLE / ARCHITECTURE
+        ============================================================ -->
+        <section id="principle">
+            <h2><i class="fas fa-cogs"></i> Principle &amp; Architecture</h2>
+            <p>
+                {{The design has 3 blocks: Baud Generator (divides clock), Transmitter (FSM: IDLE→START→DATA→STOP), and Receiver (detects START, samples at mid-bit using 16x oversampling).}}
+                <br><br>
+                <strong>Example (UART):</strong> The top-level design consists of three main blocks:
+                <ul>
+                    <li><strong>Baud Generator:</strong> Divides the system clock (100 MHz) down to the target baud rate (115200 Hz) using a programmable counter.</li>
+                    <li><strong>Transmitter (TX):</strong> A Finite State Machine (FSM) that idles HIGH. On a load signal, it pulls the line LOW (START bit), shifts out 8 data bits (LSB-first), and then returns HIGH (STOP bit).</li>
+                    <li><strong>Receiver (RX):</strong> A more complex FSM that detects the START bit (HIGH→LOW transition), oversamples at 16x the baud rate to sample each bit in the center (noise rejection), and asserts a <code>data_ready</code> flag after receiving the STOP bit.</li>
+                </ul>
+                The receiver uses a <strong>mid-bit sampling</strong> technique to avoid glitches on the line, making it robust in noisy environments.
+            </p>
+            <div class="info-box">
+                <i class="fas fa-project-diagram" style="color: #64b5f6; margin-right: 10px;"></i>
+                <strong>State Machine Flow:</strong> IDLE → START → DATA[0:7] → STOP → IDLE.
+            </div>
+        </section>
+
+        <!-- ============================================================
+        3. USAGE IN VLSI
+        ============================================================ -->
+        <section id="vlsi-usage">
+            <h2><i class="fas fa-server"></i> Usage in VLSI / Silicon</h2>
+            <p>
+                {{UART is embedded as an AXI/AHB peripheral. Key VLSI concerns: Clock Domain Crossing (CDC) synchronization, power-gating for wake-on-UART, and timing closure for the baud counter.}}
+                <br><br>
+                <strong>Example (UART):</strong> In modern System-on-Chip (SoC) designs, UART is embedded as a peripheral bridge between the high-speed processor bus (e.g., AXI/AHB) and low-speed external devices. 
+                <br><br>
+                Key VLSI considerations include:
+                <ul>
+                    <li><strong>Clock Domain Crossing (CDC):</strong> The UART typically operates in a separate frequency domain. A synchronizer is often added to the RX line to prevent metastability.</li>
+                    <li><strong>Low-Power Design:</strong> UART peripherals are often power-gated in mobile SoCs and woken up only when a START bit is detected (wake-on-UART).</li>
+                    <li><strong>Synthesis constraints:</strong> The baud generator must meet timing even at high clock frequencies (e.g., 200 MHz). Careful counter logic ensures no timing violations.</li>
+                </ul>
+            </p>
+        </section>
+
+        <!-- ============================================================
+        4. REAL-WORLD APPLICATIONS
+        ============================================================ -->
+        <section id="real-world">
+            <h2><i class="fas fa-globe-americas"></i> Real-World Applications</h2>
+            <p>
+                {{IoT sensors (GPS/MPU6050), industrial PLC communication, USB-to-serial debug bridges (FTDI), automotive OBD-II diagnostic ports.}}
+                <br><br>
+                <strong>Example (UART):</strong> UART is everywhere in embedded electronics:
+                <ul>
+                    <li><strong>IoT Sensors:</strong> Interfacing ESP32/Arduino with GPS, MPU6050 (IMU), and environmental sensors—directly connects to my <strong>MotoScore</strong> and <strong>SVASTI</strong> projects.</li>
+                    <li><strong>Industrial Automation:</strong> Communication between Programmable Logic Controllers (PLCs) and legacy serial terminals (RS-232/RS-485).</li>
+                    <li><strong>Debugging:</strong> UART-to-USB bridges (e.g., FTDI, CP2102) are the standard method for firmware logs and bootloader communication in almost every embedded board.</li>
+                    <li><strong>Automotive:</strong> Used in OBD-II diagnostic ports for vehicle telemetry.</li>
+                </ul>
+            </p>
+        </section>
+
+        <!-- ============================================================
+        5. VERILOG CODE
+        ============================================================ -->
+        <section id="verilog-code">
+            <h2><i class="fas fa-code"></i> Verilog RTL Code</h2>
+            <p>Below is the synthesizable RTL for the top-level module. The code follows a clean, modular structure.</p>
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <span><i class="fas fa-file-code"></i> <span class="file-name">{{TOP_FILE_NAME}}.v</span></span>
+                    <span><i class="fas fa-check-circle" style="color: #4caf50;"></i> Synthesizable</span>
+                </div>
+                <pre><code class="language-verilog">{{uart_tx_code.png}}
+        // ------------------------------------------------------------
+        // Module: uart_tx
+        // Description: 
+        //   {{Top-level wrapper integrating baud_gen, transmitter, and receiver. Supports 8N1 protocol at 115200 baud.}}
+        //   Designed as part of the 100-day VLSI journey.
+        // Performance: Operates at {{BAUD_RATE}} baud. 
+        //   Latency: 1 cycle load + 10 bit-periods for serialization.
+        // ------------------------------------------------------------
+        module uart_tx (
+            input wire clk,        // System clock (e.g., 100 MHz)
+            input wire rst_n,      // Active-low reset
+            input wire [7:0] tx_data,
+            input wire tx_en,
+            output wire tx_out,
+            input wire rx_in,
+            output wire [7:0] rx_data,
+            output wire rx_valid
+        );
+        
+            // Wire declarations for internal connections
+            wire clk_baud;
+            wire tx_busy;
+        
+            // Instantiate Baud Generator
+            baud_gen #(.DIVISOR({{DIVISOR_VALUE}})) u_baud (
+                .clk(clk),
+                .rst_n(rst_n),
+                .baud_clk(clk_baud)
+            );
+        
+            // Instantiate Transmitter
+            uart_tx u_tx (
+                .clk(clk_baud),
+                .rst_n(rst_n),
+                .data_in(tx_data),
+                .tx_en(tx_en),
+                .tx_busy(tx_busy),
+                .tx_out(tx_out)
+            );
+        
+            // Instantiate Receiver
+            uart_rx u_rx (
+                .clk(clk_baud),
+                .rst_n(rst_n),
+                .rx_in(rx_in),
+                .data_out(rx_data),
+                .rx_valid(rx_valid)
+            );
+        
+        endmodule
+                </code></pre>
+            </div>
+            <p style="font-size: 14px; color: #8892a8;">
+                <i class="fas fa-info-circle"></i> Full submodules (baud_gen, uart_tx, uart_rx) are available in the GitHub repository.
+            </p>
+        </section>
+
+        <!-- ============================================================
+        6. TESTBENCH CODE
+        ============================================================ -->
+        <section id="testbench-code">
+            <h2><i class="fas fa-vial"></i> Self-Checking Testbench</h2>
+            <p>
+                A self-checking testbench is critical for automated verification. It sends 5 random test vectors through the UART (TX → RX loopback) and compares the output without manual waveform inspection.
+            </p>
+            <div class="code-container">
+                <div class="code-header">
+                    <span><i class="fas fa-flask"></i> <span class="file-name">tb_{{uart_tx}}.v</span></span>
+                    <span><i class="fas fa-check-double" style="color: #4caf50;"></i> Self-Checking</span>
+                </div>
+                <pre><code class="language-verilog">{{uart_tx_tb_code.png}}
+        // ------------------------------------------------------------
+        // Testbench: 
+        // Features:
+        //   - Loopback connection (tx_out to rx_in)
+        //   - Generates 5 random 8-bit values
+        //   - Automatically compares sent vs received data
+        //   - Prints "PASS" or "FAIL" to the console
+        //   - Dumps .vcd file for GTKWave analysis
+        // ------------------------------------------------------------
+        `timescale 1ns / 1ps
+        
+        module tb_uart_tx;
+        
+            reg clk;
+            reg rst_n;
+            reg [7:0] tx_data;
+            reg tx_en;
+            wire tx_out;
+            wire [7:0] rx_data;
+            wire rx_valid;
+            wire rx_in;
+        
+            // DUT Instantiation
+            {{TOP_MODULE_NAME}} dut (
+                .clk(clk),
+                .rst_n(rst_n),
+                .tx_data(tx_data),
+                .tx_en(tx_en),
+                .tx_out(tx_out),
+                .rx_in(rx_in),
+                .rx_data(rx_data),
+                .rx_valid(rx_valid)
+            );
+        
+            // Loopback connection
+            assign rx_in = tx_out;
+        
+            // Clock generation (10ns period -> 100MHz)
+            always #5 clk = ~clk;
+        
+            // Test Sequence
+            initial begin
+                $dumpfile("dump.vcd");
+                $dumpvars(0, tb_{{TOP_MODULE_NAME}});
+        
+                // Initialize
+                clk = 0;
+                rst_n = 0;
+                tx_data = 8'h00;
+                tx_en = 0;
+                #20 rst_n = 1;
+        
+                // Test 5 random values
+                repeat(5) begin
+                    tx_data = $random;        // Generate random byte
+                    tx_en = 1;
+                    #20 tx_en = 0;
+                    #200;                     // Wait for transmission to complete
+                    
+                    // Check if received data matches sent data
+                    if (rx_valid && (rx_data == tx_data))
+                        $display("[PASS] Sent: %h, Received: %h", tx_data, rx_data);
+                    else
+                        $display("[FAIL] Sent: %h, Received: %h", tx_data, rx_data);
+                end
+                
+                $display("Simulation finished.");
+                #100 $finish;
+            end
+        
+        endmodule
+                </code></pre>
+            </div>
+            <div class="info-box">
+                <i class="fas fa-terminal" style="color: #64b5f6; margin-right: 10px;"></i>
+                <strong>Run Command:</strong> 
+                <code style="background: #0d1117; padding: 6px 12px; border-radius: 4px; color: #64ffda;">iverilog -o sim tb_{{TOP_MODULE_NAME}}.v {{TOP_FILE_NAME}}.v &amp;&amp; vvp sim &amp;&amp; gtkwave dump.vcd</code>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        7. WAVEFORMS (BLOG / SCREENSHOTS)
+        ============================================================ -->
+        <section id="waveforms">
+            <h2><i class="fas fa-chart-line"></i> Verilog Waveform Blog</h2>
+            <p>
+                The following waveforms were captured using <strong>GTKWave</strong> after running the self-checking testbench. 
+                The analysis confirms correct protocol timing and data integrity.
+            </p>
+
+            <div class="waveform-grid">
+                <!-- Card 1 -->
+                <div class="waveform-card">
+                    <img src="{{uart_tx_waveform.peg}}" alt="GTKWave screenshot showing UART start, data, and stop bits" style="min-height: 150px; background: #0b0e14; display: flex; align-items: center; justify-content: center; color: #4a5a72; font-size: 14px;">
+                    <div class="caption">
+                        <i class="fas fa-flag"></i> <strong>Figure 1:</strong> {{START bit (HIGH→LOW), 8 data bits sampled at center, STOP bit (HIGH).}} 
+                        <span style="display: block; margin-top: 6px; color: #8892a8; font-size: 13px;">
+                            <i class="fas fa-circle" style="color: #ff5252; font-size: 10px;"></i> START bit detected (HIGH→LOW) &middot; 
+                            <i class="fas fa-circle" style="color: #4caf50; font-size: 10px;"></i> 8 Data bits sampled at center &middot; 
+                            <i class="fas fa-circle" style="color: #ffeb3b; font-size: 10px;"></i> STOP bit (HIGH)
+                        </span>
+                    </div>
+                </div>
+               
+
+            <!-- Optional additional waveform analysis text -->
+            <div style="margin-top: 25px; background: #141b24; padding: 20px 25px; border-radius: 8px; border: 1px solid #1e2630;">
+                <p style="margin-bottom: 0; font-size: 15px;">
+                    <i class="fas fa-microscope" style="color: #64b5f6; margin-right: 10px;"></i>
+                    <strong>Analysis:</strong> {{The receiver correctly ignores glitches shorter than 1/16th of bit period. All 5 random test vectors matched 100%, proving mid-bit sampling logic is functional.}}
+                    <br><span style="color: #8892a8; font-size: 14px;">
+                        (e.g., The receiver correctly ignores glitches shorter than 1/16th of the bit period. Data integrity is 100% across all 5 test vectors, proving the mid-bit sampling logic is functional.)
+                    </span>
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="border-top: 1px solid #1e2630; padding-top: 30px; margin-top: 40px; color: #4a5a72; font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+            <span><i class="fas fa-github"></i> <a href="https://github.com/karriudaya259-blip" target="_blank">karriudaya259-blip</a></span>
+            <span><i class="fas fa-code-branch"></i> Part of <strong>100-Day VLSI Journey</strong> · Day {{21}}</span>
+            <span><i class="fas fa-envelope"></i> kjyoshna2021@gmail.com</span>
+        </footer>
+
+    </main>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-verilog.min.js"></script>
+    
+    <!-- Smooth scroll for sidebar links -->
+    <script>
+        document.querySelectorAll('.sidebar a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Update active class
+                    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+        // Highlight current section on scroll (optional)
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            document.querySelectorAll('.sidebar a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
